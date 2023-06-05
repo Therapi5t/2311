@@ -1,4 +1,4 @@
-package web.Model;
+package web.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GenerationType;

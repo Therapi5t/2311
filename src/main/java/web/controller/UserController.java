@@ -1,65 +1,65 @@
 package web.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
-import web.Model.User;
+import web.model.User;
 import web.service.UserService;
 
 import java.util.List;
 
-
 @Controller
-@RequestMapping("/")
+@RequestMapping("/users")
 public class UserController {
-    private UserService userService;
-    @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
+
+    private final UserService userService;
+
+    public UserController(UserService service) {
+        this.userService = service;
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ModelAndView allUsers() {
+    @GetMapping("/")
+    public String getAllUsers(Model model) {
         List<User> users = userService.getAllUsers();
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("users");
-        modelAndView.addObject("usersList", users);
-        return modelAndView;
-    }
-    @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public String addPage() {
-        return "addUser";
+        model.addAttribute(users);
+        return "users";
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String addUser(@ModelAttribute("user") User user) {
-        userService.saveUser(user);
-        return "redirect:/";
+    @GetMapping("/add")
+    public String addUserForm(Model model) {
+        model.addAttribute(new User());
+        return "add";
     }
 
-    @RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
-    public ModelAndView editPage(@PathVariable("id") long id) {
-        User user = userService.getByIdUser(id);
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("сhangeUser");
-        modelAndView.addObject("user", user);
-        return modelAndView;
+    @PostMapping("/add")
+    public String addUser(@ModelAttribute User user) {
+        userService.addUser(user);
+        return "redirect:/users";
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public String editUser(@ModelAttribute("user") User user) {
-        userService.saveUser(user);
-        return "redirect:/";
+    @GetMapping("/edit/{id}")
+    public String updateUserForm(@PathVariable long id, Model model) {
+        User user = userService.getUserById(id);
+        model.addAttribute(user);
+        return "edit";
     }
 
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-    public String deleteUser(@PathVariable("id") long id) {
+    @PutMapping("/edit/{id}")
+    public String updateUser(@PathVariable long id, @ModelAttribute User user) {
+        userService.updateUser(id, user);
+        return "redirect:/users";
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public String deleteUser(@PathVariable long id) {
         User user = userService.getByIdUser(id);
         userService.deleteUser(user);
-        return "redirect:/";
+        return "redirect:/users";
     }
 }
