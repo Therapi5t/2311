@@ -1,5 +1,6 @@
 package web.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -21,11 +22,10 @@ import java.util.Properties;
 @PropertySource(value = {"classpath:db.properties"})
 public class HibernateConfig {
 
-    private final Environment environment;
+    @Autowired
+    private Environment environment;
 
-    public HibernateConfig(Environment environment) {
-        this.environment = environment;
-    }
+
 
     @Bean(name = "entityManagerFactory")
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
@@ -56,10 +56,22 @@ public class HibernateConfig {
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(environment.getProperty("jdbc.driver"));
-        dataSource.setUrl(environment.getProperty("jdbc.url"));
-        dataSource.setUsername(environment.getProperty("jdbc.username"));
-        dataSource.setPassword(environment.getProperty("jdbc.password"));
+        String driver = environment.getProperty("jdbc.driver");
+        if (driver != null) {
+            dataSource.setDriverClassName(driver);
+        }
+        String url = environment.getProperty("jdbc.url");
+        if (url != null) {
+            dataSource.setUrl(url);
+        }
+        String username = environment.getProperty("jdbc.username");
+        if (username != null) {
+            dataSource.setUsername(username);
+        }
+        String password = environment.getProperty("jdbc.password");
+        if (password != null) {
+            dataSource.setPassword(password);
+        }
         return dataSource;
     }
 
