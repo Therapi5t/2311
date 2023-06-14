@@ -1,44 +1,46 @@
 package web.dao;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import web.model.User;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository
 public class UserDaoImp implements UserDao {
-
     @PersistenceContext
     private EntityManager entityManager;
 
-    public UserDaoImp() {
-    }
 
     @Override
-    public List<User> getAllUsers() {
-        return entityManager.createQuery("SELECT user FROM User user", User.class).getResultList();
-    }
-
-    @Override
-    public void saveUser(User user) {
+    public void save(User user) {
         entityManager.persist(user);
     }
 
-    @Transactional
     @Override
-    public void deleteUser(User user) {
-        entityManager.remove(entityManager.contains(user) ? user : entityManager.merge(user));
-    }
-
-    @Override
-    public User getByIdUser(Long id) {
+    public User findById(Long id) {
         return entityManager.find(User.class, id);
     }
 
     @Override
-    public User getUser(long id) {
-        return entityManager.find(User.class, id);
+    public List<User> findAll() {
+        return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
+    }
+
+    @Override
+    public void update(Long id, User user) {
+        User user1 = entityManager.find(User.class, id);
+        user1.setId(user.getId());
+        user1.setName(user.getName());
+        user1.setLast_name(user.getLast_name());
+        user1.setEmail(user.getEmail());
+        user1.setAge(user.getAge());
+        entityManager.merge(user1);
+    }
+
+    @Override
+    public void delete(User user) {
+        entityManager.remove(user);
     }
 }

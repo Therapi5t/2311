@@ -1,42 +1,41 @@
 package web.model;
 
+
 import javax.persistence.Entity;
-import javax.persistence.GenerationType;
-import javax.persistence.Table;
-import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.criteria.CriteriaBuilder;
+
 @Entity
 @Table(name = "users")
 public class User {
-    private String name;
-    private Integer age;
-    private String email;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String name;
+    private String last_name;
+    private String email;
+    private Integer age;
 
     public User() {
-
-    }
-    public User(String name, int age, String email) {
-       this.name = name;
-       this.age = age;
-       this.email = email;
-    }
-    public int getAge() {
-        return age;
     }
 
-    public void setAge(Integer age) {
+    public User(String name, String last_name, String email, Integer age) {
+        this.name = name;
+        this.last_name = last_name;
+        this.email = email;
         this.age = age;
     }
 
-    public String getEmail() {
-        return email;
+    public Long getId() {
+        return id;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -47,18 +46,39 @@ public class User {
         this.name = name;
     }
 
+    public String getLast_name() {
+        return last_name;
+    }
+
+    public void setLast_name(String last_name) {
+        this.last_name = last_name;
+    }
+
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email =email;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
     @Override
     public String toString() {
-        return "   name = " + name +
-                "  age = " + age +
-                "  email = " + email + "   ";
+        return "Users{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", last_name='" + last_name +'\'' +
+                ", email='" + email + '\'' +
+                ", age=" + age + '}';
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
 }

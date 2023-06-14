@@ -1,63 +1,44 @@
 package web.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
-import web.model.User;
 import web.dao.UserDao;
+import web.model.User;
 
 import java.util.List;
 
 @Service
-public class UserServiceImp implements UserService {
-    private UserDao userDaoImp;
+public class UserServiceImp implements UserService{
+    private final UserDao userDao;
 
-    @Autowired
-    public void setUserDAO(UserDao userDaoImp) {
-        this.userDaoImp = userDaoImp;
+    public UserServiceImp(UserDao userDao) {
+        this.userDao = userDao;
     }
-
-    @Override
-    public List<User> getAllUsers() {
-        return userDaoImp.getAllUsers();
-    }
-
-    @Override
     @Transactional
-    public void saveUser(User user) {
-        userDaoImp.saveUser(user);
+    @Override
+    public void save(User user) {
+        userDao.save(user);
     }
 
     @Override
+    public User findById(Long id) {
+        return userDao.findById(id);
+    }
+
+    @Override
+    public List<User> findAll() {
+        return userDao.findAll();
+    }
+
     @Transactional
-    public void deleteUser(User user) {
-        userDaoImp.deleteUser(user);
+    @Override
+    public void update(Long id, User user) {
+        userDao.update(id, user);
     }
 
-    @Override
-    public User getByIdUser(Long id) {
-        return userDaoImp.getByIdUser(id);
-    }
-
-    @Override
     @Transactional
-    public void addUser(User user) {
-        userDaoImp.saveUser(user);
-    }
-
     @Override
-    public User getUserById(long id) {
-        return userDaoImp.getUser(id);
-    }
-
-    @Override
-    @Transactional
-    public void updateUser(long id, User user) {
-        User existingUser = userDaoImp.getUser(id);
-        existingUser.setName(user.getName());
-        existingUser.setAge(user.getAge());
-        existingUser.setEmail(user.getEmail());
-        userDaoImp.saveUser(existingUser);
+    public void delete(User user) {
+        userDao.delete(user);
     }
 }
